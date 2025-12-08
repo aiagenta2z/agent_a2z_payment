@@ -11,8 +11,8 @@ can define when and where to charge money or create an order with remote DB (AI 
 SDK Function - Payment Agent
 1. Support Various Payment Method Integration (Stripe/Paypal/Alipay/WeChat/AgentA2Z) and environment (sandbox/production)
 2. Different payment scenario and workflow, such as Cost-Based Consumption, Preview-to-Pay, Post-Workflow Tip (Tipping/Send Red Envelops), E-Commerce Checkout
-3. Create_Order, Checkout, Accept Webhook for notification in one SDK
-3. 4Customized Checkout Styles and JS, You can provide your own checkout styles, css, js files, etc.
+3. Create_Order, Checkout, Accept Webhook for notification in one SDK 
+4. Customized Checkout Styles and JS, You can provide your own checkout styles, css, js files, etc.
 
 
 SDK Function - Billing Agent
