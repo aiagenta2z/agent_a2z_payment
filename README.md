@@ -83,7 +83,8 @@ If user pays successfully, the agent loop will continue and return more things, 
 pip install agent-a2z-payment
 ```
 
-Run complete app example at [Payment Agent App](https://github.com/aiagenta2z/agent_a2z_payment/blob/main/app/payment_agent_app/app.py)
+Run complete app example at [Payment Agent App](https://github.com/aiagenta2z/agent_a2z_payment/tree/main/app/a2z_payment_agent)
+
 ```python
 
 import agent_a2z_payment

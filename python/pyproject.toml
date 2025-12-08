@@ -1,0 +1,46 @@
+[project]
+name = "agent_a2z_payment"
+version = "0.0.6"
+description = "Agent Payment and Billing SDK Integration, Supports All Popular Payment methods Stripe,Paypal,Alipay,WeChat,A2ZAgent Credit Payment. Billing Agent to add transaction and do analysis on expenditure"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "requests>=2.17.0",
+    "tiktoken>=0.5.0",
+    "stripe>=5.0.0"
+]
+
+authors = [
+    { email = "aihubadmin@126.com" }
+]
+license = { text = "MIT License" }
+keywords = ["Payment Agent", "In Agent Purchase", "Stripe", "Paypal", "Alipay", "WeChat"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "License :: OSI Approved :: MIT License"
+]
+
+
+[project.urls]
+Homepage = "https://www.deepnlp.org/store/ai-agent"
+Repository = "https://github.com/aiagenta2z/agent_a2z_payment"
+
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.setuptools]
+package-dir = {"agent_a2z_payment" = "src/agent_a2z_payment"}
+
+
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["release*", "bak*", "docs*", "tests*", "*.sh"]
+
+[tool.setuptools.package-data]
+"agent_a2z_payment" = ["*.txt", "*.json", "data/*.txt", "data/*.json", "web/checkout/*html", "web/checkout/*js"]
+"agent_a2z_payment.web.checkout" = ["*.html", "*js"]

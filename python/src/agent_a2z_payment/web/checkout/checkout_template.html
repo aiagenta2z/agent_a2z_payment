@@ -1,0 +1,71 @@
+        <div class="a2z-payment-container" style="border: 1px solid #e0e0e0; border-radius: 12px; padding: 20px; font-family: sans-serif; max-width: 600px; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+            <div style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">
+                <h3 style="margin: 0; color: #333;">{title}</h3>
+                <p style="margin: 5px 0 0; color: #666; font-size: 0.9em;">{description}</p>
+                <div style="font-size: 1.5em; font-weight: bold; color: #2c3e50; margin-top: 10px;">
+                    {amount} <span style="font-size: 0.5em; color: #999;">{currency}</span>
+                </div>
+            </div>
+
+            <label style="font-size: 0.85em; font-weight: bold; color: #555;">Select Payment Method:</label>
+            <div class="payment-methods" style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
+
+                <!-- Stripe/CC Option -->
+                <div onclick="selectMethod('stripe')" id="opt-stripe" class="pm-option" style="flex: 1; min-width: 80px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; cursor: pointer; text-align: center;">
+                    <div style="font-weight: bold; color: #333;">Card</div>
+                    <img class="div_image_icon_wrapper" src="https://static.aiagenta2z.com/scripts/img/payment/credit_card_icon.png" style="max-width: 36px;max-height: 36px;margin: 0 auto;">
+                    <div style="font-size: 0.7em; color: #666;">Stripe</div>
+                </div>
+
+                <div onclick="selectMethod('paypal')" id="opt-paypal" class="pm-option" style="flex: 1; min-width: 80px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; cursor: pointer; text-align: center;">
+                    <div style="font-weight: bold; color: #333;">PayPal</div>
+                    <img class="div_image_icon_wrapper" src="https://static.aiagenta2z.com/scripts/img/payment/paypal_icon.jpg" style="max-width: 36px;max-height: 36px;margin: 0 auto;">
+                    <div style="font-size: 0.7em; color: #666;">Paypal Web</div>
+                </div>
+
+                <!-- AgentA2ZPay Option -->
+                <div onclick="selectMethod('agenta2z')" id="opt-agenta2z" class="pm-option" style="flex: 1; min-width: 80px; border: 2px solid #007bff; background: #f0f7ff; border-radius: 8px; padding: 10px; cursor: pointer; text-align: center;">
+                    <div style="font-weight: bold; color: #007bff;">AgentA2Z</div>
+                    <img class="div_image_icon_wrapper" src="https://static.aiagenta2z.com/scripts/img/pub/e93da4a2f3f79e9af30dfb37a0c85907.png" style="max-width: 36px;max-height: 36px;margin: 0 auto; border-radius:5px;">
+                    <div style="font-size: 0.7em; color: #007bff;">Unified Agent Pay Credit</div>
+                </div>
+
+                <!-- Others (Visual Only for Demo) -->
+                <div onclick="selectMethod('other')" id="opt-other" class="pm-option" style="flex: 1; min-width: 80px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; cursor: pointer; text-align: center;">
+                    <div style="font-weight: bold; color: #333;">More</div>
+                    <img class="div_image_icon_wrapper" src="https://static.aiagenta2z.com/scripts/img/payment/alipay_icon.jpeg" style="max-width: 36px;max-height: 36px;margin: 0 auto;">
+                    <img class="div_image_icon_wrapper" src="https://static.aiagenta2z.com/scripts/img/payment/wechat_pay_icon.jpeg" style="max-width: 36px;max-height: 36px;margin: 0 auto;">
+                    <div style="font-size: 0.7em; color: #666;">Alipay/WeChat</div>
+                </div>
+            </div>
+
+            <!-- Stripe Action (Hidden by default) -->
+            <div id="action-stripe" class="pm-action" style="margin-top: 20px; display: none;">
+                <div class="stripe-payment-card">
+                    <p>To continue, please complete the payment.</p>
+                    <div id="card-element" style="margin-top: 20px;"></div>
+                    <button id="pay-btn" style="margin-top: 20px; display: block; width: 100%; padding: 12px; background: #007bff; color: white; text-align: center; border-radius: 6px; text-decoration: none; font-weight: bold;font-size:18px;font-weight:bold">Pay Via Stripe</button>
+                </div>
+            </div>
+
+            <div id="action-paypal" class="pm-action" style="margin-top: 20px; display: none;">
+                <a href="{paypal_url}" target="_blank" style="display: block; width: 100%; padding: 12px; background: #0070BA; color: white; text-align: center; border-radius: 6px; text-decoration: none; font-size:18px;font-weight:bold">
+                    Continue to PayPal
+                </a>
+                <p style="font-size: 0.8em; text-align: center; color: #999; margin-top: 5px;">Secure redirect to PayPal gateway</p>
+            </div>
+
+            <!-- AgentA2Z Action -->
+            <div id="action-agenta2z" class="pm-action" style="margin-top: 20px;">
+                <a href="{a2z_url}" target="_blank" style="display: block; width: 100%; padding: 12px; background: #007bff; color: white; text-align: center; border-radius: 6px; text-decoration: none; font-size:18px;font-weight:bold">
+                    Pay via AgentA2Z Credit
+                </a>
+                <p style="font-size: 0.8em; text-align: center; color: #999; margin-top: 5px;">Secure redirect to gateway</p>
+            </div>
+
+             <!-- Other Action (Hidden by default) -->
+            <div id="action-other" class="pm-action" style="margin-top: 20px; display: none;">
+                <p style="text-align: center; color: #666;">More on Alipay, WeChat integration.</p>
+            </div>
+
+        </div>
