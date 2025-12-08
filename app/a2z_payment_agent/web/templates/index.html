@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <meta name="keywords" content="{{keywords}}">
+    <meta name="description" content="{{description}}">
+
+    <link rel="stylesheet" href="{{ base_path }}/static/css/styles.css">
+    <link rel="stylesheet" href="{{ base_path }}/static/css/response_render.css">
+    <link rel="stylesheet" href="{{ base_path }}/plugin/agent_toolbox/styles.css">
+    <link rel="stylesheet" href="{{ base_path }}/plugin/mcp_marketplace_explorer/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="canonical" href="{{canonical_url}}">
+
+    <!-- Global Config JS -->
+    <script type="text/javascript" src="{{ base_path }}/static/scripts/init.js"></script>
+    <!-- markdown and safe xml -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.0/marked.min.js"></script>
+
+</head>
+<body>
+    <div class="app-container">
+        
+        <div class="sidebar">
+            <button class="collapse-btn">≡</button>
+            <div class="sidebar-section">
+                <div class="sidebar-item" id="new-chat">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentColor"/>
+                    </svg>
+                    <span class="sidebar-text">New Chat</span>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-item" id="ai-agent-marketplace-sidebar">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                        <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z" fill="currentColor"/>
+                    </svg>
+                    <span class="sidebar-text">Agent Marketplace</span>
+                </div>
+                <ul class="chat-history" id="agent-frequent-list">
+                    {% for server in sidebar_agent_info %}
+                        <li class="sidebar-chat-item">
+                            <div class="history_title sidebar-chat-item-wrapper">
+                                {% if server.thumbnail_picture and server.thumbnail_picture != "" %}
+                                    <img class="display_card_image_thumbnail_img_small" src="{{ server.thumbnail_picture }}">
+                                {% else %}
+                                    <div class="default-server-icon">Agent</div>
+                                {% endif %}
+                                <span class="sidebar-chat-item-text">{{server.name}}</span>
+                            </div>
+                            <div class="server-info">
+                                <div class="server-id" style="display: none">{{server.id}}</div>
+                                <div class="server-type" style="display: none">{{server.type}}</div>
+                                <div class="server-name" style="display: none">{{server.name}}</div>
+                            </div>
+                            <a class="history_session_id" hidden="hidden"></a>
+                        </li>
+                    {% endfor %}
+
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-item" id="mcp-marketplace-sidebar">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                        <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z" fill="currentColor"/>
+                    </svg>
+                    <span class="sidebar-text">MCP Marketplace</span>
+                </div>
+                <ul class="chat-history" id="mcp-frequent-list">
+                    {% for server in sidebar_mcp_info %}
+                        <li class="sidebar-chat-item">
+                            <div class="history_title sidebar-chat-item-wrapper">
+                                {% if server.thumbnail_picture and server.thumbnail_picture != "" %}
+                                    <img class="display_card_image_thumbnail_img_small" src="{{ server.thumbnail_picture }}">
+                                {% else %}
+                                    <div class="default-server-icon">MCP</div>
+                                {% endif %}
+                                <span class="sidebar-chat-item-text">{{server.name}}</span>
+                            </div>
+                            <div class="server-info">
+                                <div class="server-id" style="display: none">{{server.id}}</div>
+                                <div class="server-type" style="display: none">{{server.type}}</div>
+                                <div class="server-name" style="display: none">{{server.name}}</div>
+                            </div>
+                            <a class="history_session_id" hidden="hidden"></a>
+                        </li>
+                    {% endfor %}
+
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-header">History</h3>
+                <ul class="chat-history" id="chat-history">
+
+                    {% for message in dialogue_history %}
+                        <li class="history-item"><p class="history_title">{{ message.content }}</p><a class="history_session_id" hidden="hidden">{{ message.session_id }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="user-center">
+                <div class="user-avatar">U</div>
+                <div class="user-info">
+                    <span class="username"></span>
+                    <button class="user-info-login-btn-small">Login</button>
+                    <button class="setting-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+                            <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" fill="currentColor"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content drop-area">
+            <div class="agent-container" id="agent-container">
+            <!-- display agents in the top banner -->
+                <div class="mcp-servers-list-container">
+                    <button class="add-server-button">+</button>
+
+                    <div class="servers-container">
+                        <button class="scroll-btn left" aria-label="move_left">◀</button>
+
+                        <div class="mcp-servers-scroll-container">
+
+                            <div class="mcp-servers-list">
+                                {# Agent #}
+                                {% for agent in agents_display %}
+                                    <div class="mcp-server-item">
+                                        <div class="server-header">
+                                            <div class="server-header-left">
+                                                <div class="server-icon-container">
+                                                    {% if agent.thumbnail_picture and agent.thumbnail_picture != "" %}
+                                                        <img class="display_card_image_thumbnail_img_small" src="{{ agent.thumbnail_picture }}">
+                                                    {% else %}
+                                                        <div class="default-server-icon">Agent</div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="server-info">
+                                                    <div class="server-id" style="display: none">{{agent.id}}</div>
+                                                    <div class="server-type" style="display: none">{{agent.type}}</div>
+                                                    <div class="server-name">{{agent.name}}</div>
+                                                    <div class="server-status">
+                                                        {% if agent.status == "On" %}
+                                                            <span class="status-indicator status-on"></span><span>On</span>
+                                                        {% elif  agent.status == "Off" %}
+                                                            <span class="status-indicator status-off"></span><span>Off</span>
+                                                        {% elif  agent.status == "Not Found" %}
+                                                            <span class="status-indicator status-not-found"></span><span>NA</span>
+                                                        {% else %}
+                                                            <span class="status-indicator status-not-found"></span><span>NA</span>
+                                                        {% endif %}
+                                                        <button class="banner-action-small-btn">Try</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+{#                                        <div class="toggle-container">#}
+{#                                            <button class="banner-action-small-btn">Try</button>#}
+{#                                        </div>#}
+                                    </div>
+                                {% endfor %}
+
+                                {# MCP #}
+                                {% for server in mcp_servers_display %}
+                                    <div class="mcp-server-item">
+                                        <div class="server-header">
+                                            <div class="server-header-left">
+                                                <div class="server-icon-container">
+                                                    {% if server.thumbnail_picture and server.thumbnail_picture != "" %}
+                                                        <img class="display_card_image_thumbnail_img_small" src="{{ server.thumbnail_picture }}">
+                                                    {% else %}
+                                                        <div class="default-server-icon">MCP</div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="server-info">
+                                                    <div class="server-id" style="display: none">{{server.id}}</div>
+                                                    <div class="server-type" style="display: none">{{server.type}}</div>
+                                                    <div class="server-name">{{server.name}}</div>
+                                                    <div class="server-status">
+                                                        {% if server.status == "On" %}
+                                                            <span class="status-indicator status-on"></span><span>On</span>
+                                                        {% elif  server.status == "Off" %}
+                                                            <span class="status-indicator status-off"></span><span>Off</span>
+                                                        {% elif  server.status == "Not Found" %}
+                                                            <span class="status-indicator status-not-found"></span><span>NA</span>
+                                                        {% else %}
+                                                            <span class="status-indicator status-not-found"></span><span>NA</span>
+                                                        {% endif %}
+                                                        <button class="banner-action-small-btn">Try</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+{#                                        <div class="toggle-container">#}
+{#                                            <button class="banner-action-small-btn">Try</button>#}
+{#                                        </div>#}
+
+{#                                        <div class="toggle-container">#}
+{#                                            <div class="toggle-icon">▼</div>#}
+{#                                            <div class="toggle-label">Tools</div>#}
+{#                                        </div>#}
+
+{#                                        <div class="div_server_tool_grid">#}
+{#                                            {% for tool in server.tools %}#}
+{#                                                <div class="tool-header">#}
+{#                                                    <h4 class="a_tool_name">{{ tool.name }}</h4>#}
+{#                                                </div>#}
+{#                                                <div class="tool_description">{{ tool.description }}</div>#}
+{#                                            {% endfor %}#}
+{#                                        </div>#}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <button class="scroll-btn right" aria-label="move_right">▶</button>
+                    </div>
+                </div>
+
+
+                <div class="chat-container" id="chatbox">
+                    {% for message in chatbox_dialogue_list %}
+                        {% if message.role == "assistant" %}
+                            <div class="message assistant bot-message" id="{{ message.msg_id }}">{{ message.content | safe }}</div>
+                        {% else %}
+                            <div class="message user outgoing" id="{{ message.msg_id }}">{{ message.content | safe }}</div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                
+                <div class="input-container">
+                    
+                    <div id="suggestionsContainer" class="suggestions-container"></div>
+                    <div class="input-wrapper">
+                            <textarea id="searchInput" placeholder="Please ask anything..." rows="1">{{q}}</textarea>
+                            <button id="sendBtn">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="currentColor"></path>
+                                </svg>
+                            </button>
+                    </div>
+
+                    <div class="button-container">
+                        <div class="dropdown">
+                            <button class="action-btn" id="workflowBtn" data-value="{{ available_payment_workflow_list[0] }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" fill="currentColor"/>
+                                </svg>
+                                <span>{{ available_payment_workflow_list[0] }}</span>
+                            </button>
+                            <div class="dropdown-content">
+                                {% for workflow in available_payment_workflow_list %}
+                                    <div class="dropdown-item" data-value="{{ workflow }}">
+                                        <strong>{{ workflow }}</strong>
+                                        <span>{{ workflow }}</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- debug section -->
+                <div id="system-messages" class="system-messages"></div>
+
+            </div>
+
+            <div class="modal-overlay" id="serverModal">
+                    
+                    <div class="modal">
+                        <div class="panel-header">
+                            <h3>Agent ToolBox</h3>
+                            <button class="close-panel">&times;</button>
+                        </div>
+
+                        <div class="panel-content">
+
+                            <div class="panel-section">
+                                <h4>Filter Tool By Category and Add</h4>
+                                <select id="templateSelect">
+                                        <option value="Official">Official</option>
+
+                                        {% for key, value in mcp_marketplace_servers.items() %}
+                                            {% if key != "Official" %}
+                                                <option value="{{ key }}">{{ key }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+
+                                </select>
+
+                                <div id="template-tools-wrapper" class="filter_tab_section">
+
+                                    <div id="template-tools" class="template-tools">
+                                            {% for key, value in mcp_marketplace_servers.items() %}
+
+                                                {% if key == "Official" %}
+                                                     <!-- Visible -->
+                                                    {% for item in value %}
+                                                        <div class="server-item server-item_{{key}}">
+                                                            {% if item.thumbnail_picture %}
+                                                                <img class="display_card_image_thumbnail_img" src="{{ item.thumbnail_picture }}">
+                                                            {% else %}
+                                                                <div class="div_icon_default_name">MCP</div>
+                                                            {% endif %}
+                                                            <a hidden="hidden" class="server_id">{{ item.id }}</a>
+                                                            <a hidden="hidden" class="server_name">{{ item.server_name }}</a>
+                                                            <h3 class="content_name">{{ item.content_name }}</h3>
+                                                            <p class="description">{{ item.description }}</p>
+                                                            <p class="category">{{ item.subfield }}</p>
+                                                        </div>
+                                                    {% endfor %}
+
+                                                {% else %}
+
+                                                    {% for item in value %}
+                                                        <div class="server-item server-item-hidden server-item_{{key}}">
+                                                            {% if item.thumbnail_picture %}
+                                                                <img class="display_card_image_thumbnail_img" src="{{ item.thumbnail_picture }}">
+                                                            {% else %}
+                                                                <div class="div_icon_default_name">MCP</div>
+                                                            {% endif %}
+                                                            <a hidden="hidden" class="server_id">{{ item.id }}</a>
+                                                            <a hidden="hidden" class="server_name">{{ item.server_name }}</a>                                                            
+                                                            <h3 class="content_name">{{ item.content_name }}</h3>
+                                                            <p class="description">{{ item.description }}</p>
+                                                            <p class="category">{{ item.subfield }}</p>
+                                                        </div>
+                                                    {% endfor %}
+
+                                                {% endif %}
+
+
+                                            {% endfor %}
+                                    </div>
+
+                                    <div id="template-page-selector">
+                                        {% for key, value in page_id_map.items() %}
+
+                                            {% if key == "Official" %}
+                                                <!-- page id selector -->
+                                                <div class="page_selector page_selector_{{key}}">
+                                                    <div class="page_id_wrapper page_id_wrapper_start"><a class="page_prefix_a">Page</a></div>
+                                                    {% for page_id in value %}
+                                                        {% if page_id == 1%}
+                                                            <div class="page_id_wrapper"><a class="page_id_a page_id_a_active">{{ page_id }}</a></div>
+                                                        {% else %}
+                                                            <div class="page_id_wrapper"><a class="page_id_a">{{ page_id }}</a></div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                <!-- page id selector -->
+                                                <div class="page_selector page_selector_hidden page_selector_{{key}}">
+                                                    <div class="page_id_wrapper page_id_wrapper_start"><a class="page_prefix_a">Page</a></div>
+                                                    {% for page_id in value %}
+                                                        {% if page_id == 1%}
+                                                            <div class="page_id_wrapper"><a class="page_id_a page_id_a_active">{{ page_id }}</a></div>
+                                                        {% else %}
+                                                            <div class="page_id_wrapper"><a class="page_id_a">{{ page_id }}</a></div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+
+                                        {% endfor %}
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="panel-section">
+                                <h4>Search & Add Tool</h4>
+                                <div class="search-box">
+                                    <input id="search-box-input" type="text" placeholder="Search Tool...">
+                                    <button id="search-box-button" class="search-box-button">Search</button>
+                                </div>
+                                <div id="tools-search-results-wrapper" class="search-results">
+                                    <div id="tools-search-results" class="template-tools">
+                                        <div class="server-item">
+                                            <a hidden="hidden" class="server_id">Demo ID 1</a>
+                                            <a hidden="hidden" class="server_name">Demo ID 1</a>                                            
+                                            <div class="div_icon_default_name">Tool</div>
+                                            <h3 class="content_name">New Tool 1</h3>
+                                            <p class="description"></p>
+                                            <p class="category">New Tool 1</p>
+                                        </div> 
+                                        <div class="server-item">
+                                            <a hidden="hidden" class="server_id">Demo ID 2</a>
+                                            <a hidden="hidden" class="server_name">Demo ID 2</a>  
+                                            <div class="div_icon_default_name">Tool</div>
+                                            <h3 class="content_name">New Tool 2</h3>
+                                            <p class="description"></p>
+                                            <p class="category">New Tool 2</p>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-section">
+                                <h4>My Tools</h4>
+                                <div id="my-tools-wrapper" class="my-tools">
+                                    <div class="server-item">
+                                        <a hidden="hidden" class="server_id">Browser Tool 1</a>
+                                        <a hidden="hidden" class="server_name">Browser Tool 1</a>  
+                                        <div class="div_icon_default_name">Tool</div>
+                                        <h3 class="content_name">Browser Tool 1</h3>
+                                        <p class="description"></p>
+                                        <p class="category">Browser</p>
+                                    </div> 
+                                    <div class="server-item">
+                                        <a hidden="hidden" class="server_id">Map Tool 1</a>
+                                        <a hidden="hidden" class="server_name">Map Tool 1</a>                                          
+                                        <div class="div_icon_default_name">Tool</div>
+                                        <h3 class="content_name">Map Tool 1</h3>
+                                        <p class="description"></p>
+                                        <p class="category">Map</p>
+                                    </div> 
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button class="modal-button secondary">Cancel</button>
+                                <button class="modal-button primary">Add Server</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+            </div>
+
+
+            <div class="modal-overlay" id="userLoginModal">
+                    
+                    <div class="modal">
+
+                        <div class="login-container">
+                            <div class="login-header">
+                                <h2>Welcome</h2>
+                                <div class="close-panel close-btn-login">&times;</div>
+                            </div>
+                            
+                            <div class="login-body">
+                                <div class="social-login">
+                                    <div class="social-btn google-btn" title="Google">
+                                        <i class="fab fa-google"></i>
+                                    </div>
+                                    <div class="social-btn github-btn" title="GitHub">
+                                        <i class="fab fa-github"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="divider">Email</div>
+                                <div id="loginForm">
+                                    <div class="form-group">
+                                        <label for="username">User Name</label>
+                                        <input type="text" id="username" class="form-control" placeholder="please enter username" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="password">Password</label>
+                                        <div class="input-with-icon">
+                                            <input type="password" id="password" class="form-control" placeholder="please enter password" required>
+                                            <span class="password-toggle" id="togglePassword">
+                                                <i class="far fa-eye"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <span class="login-status" id="login_result_message"></span>
+                                    </div>
+
+                                    <div class="remember-forgot">
+                                        <div class="remember-me">
+                                            <input type="checkbox" id="remember">
+                                            <label for="remember">Remember</label>
+                                        </div>
+                                        <a target="_blank" href="https://www.deepnlp.org/account/register" class="forgot-password">Forget password?</a>
+                                    </div>
+                                    
+                                    <button type="submit" class="login-btn">Login</button>
+                                </div>
+                                
+                                <div class="signup-link">
+                                    No Account? <a target="_blank" href="https://www.deepnlp.org/account/register">Register</a>
+                                </div>
+                            </div>
+
+                            <div class="logout-body" style="display: none">
+                                <div class="social-login">
+                                    <div class="social-btn google-btn" title="Google">
+                                        <i class="fab fa-google"></i>
+                                    </div>
+                                    <div class="social-btn github-btn" title="GitHub">
+                                        <i class="fab fa-github"></i>
+                                    </div>
+                                </div>
+                                <div class="divider">Account</div>
+                                <div class="logoutForm">
+                                    <div class="form-group">
+                                        <span class="logged-in-user-id"></span>
+                                        <div class="user-avatar-form-center"></div>
+                                        <span class="user-billing-title"></span>
+                                        <div class="user-billing-plan"></div>
+                                        <div class="user-billing-balance"></div>
+                                    </div>
+                                    <button type="submit" class="logout-btn">Logout</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+            </div>
+
+            <div class="modal-overlay" id="mediaModal">
+                    
+                    <div class="modal-large">
+                        <div class="panel-header-large">
+                            <button class="close-panel">&times;</button>
+                        </div>
+                        <div class="panel-content-large">
+                        </div>
+                    </div>
+            </div>
+
+        </div>
+
+        <div class="preview-section" id="previewSection">
+            <div class="preview-header">
+                <h3 id="previewTitle">File Preview</h3>
+                <div class="preview-controls">
+                    <span class="update-status" id="updateStatus">Checking Update...</span>
+                    <button class="preview-close-btn" id="closePreview">✕</button>
+                </div>
+            </div>
+            
+            <div class="preview-content">
+                <iframe id="previewFrame" src="" frameborder="0"></iframe>
+                <div class="loading-indicator" id="loadingIndicator">
+                    <div class="spinner"></div>
+                    <p>Loading...</p>
+                </div>
+            </div>
+
+            <div class="notification error" id="preview_notification" style="display: none;"></div>
+        </div>
+
+    </div>
+
+    <div class="custom-panel" id="memoryPanel">
+        <div class="panel-header">
+            <h3>Memory Setting</h3>
+            <button class="close-panel">&times;</button>
+        </div>
+        <div class="panel-content">
+            <div class="memory-option">
+                <input type="checkbox" id="memoryToggle" checked>
+                <label for="memoryToggle">Memory Enable</label>
+            </div>
+            
+            <div class="memory-sources">
+                <h4>Knowledge Base</h4>
+                <div>
+                    <input type="checkbox" id="githubSource" checked>
+                    <label for="githubSource">GitHub</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="blogSource" checked>
+                    <label for="blogSource">Blog</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="twitterSource">
+                    <label for="twitterSource">Twitter/X</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="facebookSource">
+                    <label for="facebookSource">Facebook</label>
+                </div>
+            </div>
+            
+            <div class="memory-actions">
+                <button class="save-btn">Save Settings</button>
+                <button class="clear-btn">Clean Memory</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="app_state_variables" class="app_state_variables">
+        <a id="dialogue_session_id" hidden="hidden"></a>
+        <a id="dialogue_user_id" hidden="hidden">{{ user_id | safe }}</a>
+        <a id="dialogue_user_group" hidden="hidden">FREE</a>
+        <a id="dialogue_turn_id" hidden="hidden">-1</a>        
+    </div>
+
+    <script type="text/javascript" src="{{ base_path }}/static/scripts/scripts.js"></script>
+    <script type="text/javascript" src="{{ base_path }}/plugin/agent_toolbox/scripts.js"></script>
+    <script type="text/javascript" src="{{ base_path }}/plugin/mcp_marketplace_explorer/scripts.js"></script>
+
+    <script type="text/javascript">
+        window.addEventListener('load', function() {
+            postIndexPageLoginUser();
+        });
+    </script>
+
+</body>
+</html>

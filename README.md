@@ -1,25 +1,53 @@
 
-### Agent A2Z Pay SDK
+### Agent A2Z Payment SDK
 
-[GitHub](https://github.com/aiagenta2z/agent_a2z_payment) | [Website AI Agent A2Z Pay](https://www.aiagenta2z.com/agent/agent-a2z-pay) | [Reviews](https://www.deepnlp.org/store/pub/pub-aiagenta2z)
+[Website](https://www.deepnlp.org/agent/agent-a2z-payment) | [GitHub](https://github.com/aiagenta2z/agent_a2z_payment) | [Playground](https://agent.deepnlp.org/a2z_payment_agent_sandbox) | [AI Agent Marketplace](https://www.deepnlp.org/store/ai-agent)
 
-AgentA2Z Pay SDK can help you integrate various payment methods (Stripe,Paypal,Alipay,WeChat) into your agent workflow and you
-can define when and where to charge money or create (AI Agent A2Z/DeepNLP API Credit) in the workflow.
-
-Payment in AI Agent Workflow Example:
-
-1. Render an AIGC Image thumbnail to user and charge $1 dollars to render the 4K version per each run.
-2. Charge 'buy me a coffee' checkout at the end of a Finance/Med/Literature Deep Research before output the final report.
-3. Ask for Tips of a few CNY by Scanning QR code to continue fixing bugs in the AI Coding scenario.
-4. E-Commerce AI shopping to allow users to confirm the final payment to complete the transaction.
-
-**AgentA2ZPayment Checkout Integration**<br>
-Checkout Card and Playground Result
-
-<img src="https://raw.githubusercontent.com/aiagenta2z/agent_a2z_payment/refs/heads/main/docs/credit_card_add.jpg" style="height:800px;" alt="AI Agent Workflow Payment">
+AgentA2Z Payment SDK by AI Agent A2Z (aiagenta2z.com) x DeepNLP (deepnlp.org) `agent-a2z-payment`can help you integrate various payment methods (Stripe,Paypal,Alipay,WeChat) into your agent workflow and you
+can define when and where to charge money or create an order with remote DB (AI Agent A2Z/DeepNLP API Credit) in the workflow.
 
 
-**Payment Options**
+## Example Playground of SDK Integration of the workflow
+
+[Sandbox Web Playground](https://agent.deepnlp.org/a2z_payment_agent_sandbox)
+You can use Stripe/Paypal/Alipay/WeChat sandbox test account to complete the payment and see the webhook notification
+
+**Preview-to-Pay**
+
+<img src="https://raw.githubusercontent.com/aiagenta2z/agent_a2z_payment/refs/heads/main/docs/workflow_preview_pay.jpg" style="width:300px;" alt="Workflow Payment Preview-to-Pay">
+
+**Post-Workflow Tip**
+
+<img src="https://raw.githubusercontent.com/aiagenta2z/agent_a2z_payment/refs/heads/main/docs/workflow_post_workflow_tipping.jpg" style="width:300px;" alt="Workflow Payment Preview-to-Pay">
+
+**E-Commerce Checkout**
+
+<img src="https://raw.githubusercontent.com/aiagenta2z/agent_a2z_payment/refs/heads/main/docs/workflow_ecommerce_checkout.jpg" style="width:300px;" alt="Workflow Payment Preview-to-Pay">
+
+
+## Workflow Integration 
+
+| Flow Name  | Core Logic                                                                                                | Description                                                                                                                                     | 
+| :--- |:----------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Cost-Based Consumption** | **Gated Content** Calculate Estimated Cost (tokens/images) $\to$  Payment (Required) $\to$ LLM completion | Calculates a cost based on estimated resources estimated to run the task/LLM. Payment is at the beginning of the workflow and **required**      |
+| **Preview-to-Pay** | **Gated Content**. LLM/Agent Completion $\to$ Preview $\to$ Payment (Required) $\to$ Final Content.       | Shows a low-resolution preview/summary of the content, like and image or first page of a report, then charges for the full, high-value version. |
+| **Post-Workflow Tip** | **Ungated Content**. LLM completion $\to$ Final Output $\to$ Payment (Voluntary Tip Request)              | The agent delivers the full, high-value content first, then presents an optional tipping card.                                                  | 
+| **E-Commerce Checkout** | **Gated Transaction**. Cart Summary $\to$ Payment $\to$ Transaction Confirmation.                         | Agent guides the user to a final cart summary and provides payment options for a large transaction.                                             |
+
+
+**Setup and Run**
+
+Visit ./app/a2z_payment_agent for more information
+
+## `agent-a2z-payment` SDK
+
+
+**Install**
+```commandline
+pip install agent-a2z-payment
+```
+
+**Support Payment Options**
 
 | Platform     | URL                                                                                                                                                                                                                                                                                                                                                |
 |--------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -33,10 +61,10 @@ Checkout Card and Playground Result
 
 Supported Environment
 
-| Platform | URL      |
-|----------|----------|
-| Python   | Pypi   |
-| NodeJs   | NodeJS |
+| Platform | URL                                              |
+|----------|--------------------------------------------------|
+| Python   | Pypi(https://pypi.org/project/agent-a2z-payment) |
+| NodeJs   | NodeJs(WIP)                                      |
 
 
 ## Brief Introduction of Different Payment Process
@@ -45,9 +73,9 @@ Supported Environment
 **Agent A2Z Payment**: Requires one step of unified credit deduction A2Z Payment on aiagenta2z.com/deepnlp.org right after payment confirmation
 **Alipay/WeChat Pay**: Requires one step: Unified Order/Create Payment (server-side, returns QR Code URL). Payment is completed via webhook after the user scans the code.
 
-## Tutorial
+## Quick Start
 
-Let's begin with a workflow that charge user per tokens consumed, Example will charge $1.
+Let's begin with a workflow that charge user per tokens consumed, Example will charge $4.
 If user pays successfully, the agent loop will continue and return more things, otherwise it will await till timeout and return a checkout fail card.
 
 **Install**
@@ -78,7 +106,7 @@ async def chat(messages: list = Body(...)
     # 1. LLM/Agent decides the cost of the task (e.g., 0.5 dollars for a report)
     ### Replace with actual logic to determine the required payment amount and currency.
     ### e.g.   output = payment_agent.calculate_payment(messages)
-    amount = 1.00 # Example amount
+    amount = 4.00 # Example amount
     currency = "USD"
     print (f"Payment Agent calculated required amount: {amount} {currency}")
 
@@ -111,7 +139,6 @@ async def stripe_webhook(request: Request):
     ### - Handle event types (e.g., 'checkout.session.completed', 'payment_intent.succeeded').
 
 
-
 @app.post("/paypal/webhook")
 async def paypal_webhook(request: Request):
     ### PAYPAL WEBHOOK IMPLEMENTATION
@@ -121,7 +148,18 @@ async def paypal_webhook(request: Request):
 
 ```
 
-Remember to put necessary Environment Keys
+Remember to put necessary Environment Keys in ,env file
+
+Run your app workflow, you can see the fully integrated App as in the playground.
+
+
+```bash
+# Run the playground Demo, Clone the Repo and Visit the app
+git clone https://github.com/aiagenta2z/agent_a2z_payment
+cd ./app/a2z_payment_agent
+```
+2.  **Environment Variables**: Define your API keys for Stripe/PayPal in a `.env` file (e.g., `STRIPE_API_KEY_PK_TEST`, `PAYPAL_CLIENT_ID_TEST`, etc.).
+
 
 ``` 
 STRIPE_API_KEY_PK_TEST=pk_test_xxxx
@@ -140,26 +178,16 @@ AGENT_A2Z_API_KEY_TEST=a2zt_xxxxxxxx
 AGENT_A2Z_API_KEY_LIVE=a2zl_xxxxxxxx
 ```
 
-Run your app workflow, you can see the fully integrated App as in the playground.
 
 
-```commandline
-git clone https://github.com/aiagenta2z/agent_a2z_payment
-cd ./agent_a2z_payment/app/payment_agent_app
-## Start Server at 7000 port
-uvicorn app:app --port 7000
-
-
-## Visit http://127.0.0.1:7000/
-## To Expose Your Local Server to Public URL for Web hook Testing
-ngrok http 7000
-
-# copy and pase the url to each payment site
-# Example: https://zincky-kenton-cloudily-xxxxx.ngrok-free.dev -> http://localhost:7000
-
-## Stripe Webhook
-https://zincky-kenton-cloudily-xxxxx.ngrok-free.dev/stripe/webhook
-
+3. **Start the Server**:
+    ```bash
+    uvicorn app:app --port 7000
+    # Access the app at [http://127.0.0.1:7000/](http://127.0.0.1:7000/)
+    ```
+4. See the playground
+``` 
+http://127.0.0.1:7000/a2z_payment_agent_sandbox
 ```
 
 ### Related
@@ -171,7 +199,4 @@ https://zincky-kenton-cloudily-xxxxx.ngrok-free.dev/stripe/webhook
 [OneKey AGent MCP Router Doc](https://deepnlp.org/doc/onekey_mcp_router)  
 [AI Agent Dataset](https://www.deepnlp.org/store/dataset)  
 [Gemini Nano Banana Agent](https://agent.deepnlp.org/agent/mcp_tool_use?server=aiagenta2z%2Fgemini_mcp_onekey)  
-
-
-
 
