@@ -94,6 +94,8 @@ from agent_a2z_payment.core import _get_paypal_access_token
 
 
 environment = Environment.SANDBOX.value
+## Switch to Live when go on live
+# environment = Environment.LIVE.value
 payment_agent = get_payment_sdk(env=environment)
 
 
@@ -132,6 +134,10 @@ async def chat(messages: list = Body(...)
     )
 
     return StreamingResponse(generator, media_type="text/event-stream")
+
+## Note: payment_stream_generator is the generator to define how to render the checkout_html to fit your front-end json chunks
+
+
 
 @app.post("/stripe/webhook")
 async def stripe_webhook(request: Request):
@@ -182,13 +188,17 @@ AGENT_A2Z_API_KEY_LIVE=a2zl_xxxxxxxx
 
 
 3. **Start the Server**:
-    ```bash
-    uvicorn app:app --port 7000
-    # Access the app at [http://127.0.0.1:7000/](http://127.0.0.1:7000/)
-    ```
-4. See the playground
+```bash
+cd ./app/a2z_payment_agent
+uvicorn app:app --port 7005 --host 0.0.0.0
+
+    
+# Access the app at [http://127.0.0.1:7000/](http://127.0.0.1:7000/)
+```
+4. See the payment playground
 ``` 
-http://127.0.0.1:7000/a2z_payment_agent_sandbox
+http://127.0.0.1:7005/a2z_payment_agent_sandbox
+
 ```
 
 ### Related

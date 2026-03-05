@@ -5,4 +5,6 @@ app/a2z_bill_agent/db/*
 *.env
 *.python-version
 *.sh
+__pycache__/
+*__pycache__/
 
